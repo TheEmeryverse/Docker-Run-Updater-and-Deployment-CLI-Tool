@@ -4,8 +4,13 @@
 Features-to-be:
 
 Automatic container name generation: Complete
+
 Error handling: WIP
+
 Customization of certain parameters
+
 Automatic CRON scheduling
+
 Device Detection, allowing for ease of install across mutliple devices
+
 More to come...
