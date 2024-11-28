@@ -4,7 +4,8 @@ set -e
 
 IFS=''
 
-file="test format.txt"
+file="samplecontainerConfig.txt"
+configFile="config.txt"
 
 customFlags='-e TZ=America/Chicago --restart=unless-stopped' # Custom flags for all containers to use
 
@@ -18,13 +19,13 @@ lastChar=$(tail -c 1 $file)
 
 if [ -z $lastChar ]
 then
-    printf "ERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
+    printf "\nERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
     exit 1
 else
-    printf "File passed last line check. Moving to total line check.\n\n"
+    printf "\nFile passed last line check.\n\n"
 fi
 
-printf "File loaded is: %s and it contains: \n" $file
+printf "File loaded is: %s\n\n" $file
 
 cat -n $file
 
@@ -40,7 +41,7 @@ do
         exit 1
     elif [ $numberOfPipes -eq 1 ]
     then
-        printf "WARNING, please make sure configuration file is formatted correctly for container %i.\nIf you left a blank run parameter the container will run with only the custom flags:\n%s\n\n" $(($totalContainerCtr+1)) $customFlags
+        printf "WARNING, please make sure configuration file is formatted correctly for container %i.\nIf you left a blank run parameter the container will run with only the custom flags:\n%s\n" $(($totalContainerCtr+1)) $customFlags
     fi
     for ((arrayLineCtr = 0; arrayLineCtr <= numberOfPipes; arrayLineCtr++))
     do
@@ -151,4 +152,4 @@ do
     fi
 done
 
-echo "All containers up to date!"
+echo "All containers up to date and redeployed!"

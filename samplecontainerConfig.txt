@@ -1,0 +1,4 @@
+docker.io/hello-world|myContainerName|-e TZ=America/Chicago
+docker.io/hello-world|containerWithNoRunParameters
+docker.io/hello-world|myContainerName3|-e TZ=Europe/Brussels -p 3333:3333 --runtime=runc
+docker.io/hello-world|anotherContainer|-e TZ=America/NewYork
