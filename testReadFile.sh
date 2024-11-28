@@ -21,7 +21,7 @@ then
     printf "ERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
     exit 1
 else
-    printf "File passed last line check. Moving to total line check.\n\n\n"
+    printf "File passed last line check. Moving to total line check.\n\n"
 fi
 
 printf "File loaded is: %s and it contains: \n" $file
@@ -36,8 +36,11 @@ do
     IFS='|' read -ra tmpArray <<<"$REPLY"
     if [ $numberOfPipes -eq 0 ]
     then
-        printf "ERROR, container %i formatted incorrectly. Please use '|' to separate the image, name, and run parameters.\nSee example config file for more information.\n\n" $(($totalContainerCtr+1))
+        printf "ERROR, container %i formatted incorrectly. You need at least the image repo and the container's name.\nPlease use '|' to separate the image, name, and run parameters.\nSee example config file on github for more information.\n\n" $(($totalContainerCtr+1))
         exit 1
+    elif [ $numberOfPipes -eq 1 ]
+    then
+        printf "WARNING, please make sure configuration file is formatted correctly for container %i.\nIf you left a blank run parameter the container will run with only the custom flags:\n%s\n\n" $(($totalContainerCtr+1)) $customFlags
     fi
     for ((arrayLineCtr = 0; arrayLineCtr <= numberOfPipes; arrayLineCtr++))
     do
@@ -80,6 +83,27 @@ do
         fi
     done
 done <"$file"
+
+printf "\n---------------------------\n"
+printf "Result of array generation:"
+printf "\n---------------------------"
+
+tmpCtr=0
+
+for ((i = 1; i <= ${#imageArray[@]+1}; i++))
+do
+    tmpCtr=$(($i-1))
+    printf "\n\nContainer %i:\n\n" $i
+    printf "Image:\n%s\n\n" ${imageArray[$tmpCtr]}
+    printf "Name:\n%s\n\n" ${nameArray[$tmpCtr]}
+    if [ -z ${runCmdArray[$tmpCtr]} ]
+    then
+        printf "Run parameters:\nLeft blank\n"
+    else
+        printf "Run parameters:\n%s\n" ${runCmdArray[$tmpCtr]}
+    fi
+    printf "\n----------------------------------------"
+done
 
 unset IFS
 
