@@ -23,13 +23,15 @@ then
     printf "ERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
     exit 1
 else
-    printf "File passed last line check. Moving to total line check.\n"
+    printf "File passed last line check. Moving to total line check.\n\n\n"
 fi
 
+printf "File loaded is: %s and it contains: \n" $file
+
 cat -n $file
-totalLines=$(sed -n '$=' $file)
-echo $totalLines
-echo $(grep "" -c $file)
+
+totalLines=$(gsed -n '$=' $file) # change to sed!!!!!!!!!
+printf "File has %i lines." $totalLines
 
 if [ $(( $totalLines % 3 )) -eq 0 ]
 then
@@ -44,7 +46,7 @@ fi
 
 printf "\n\n-----------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n-----------------------------------------------------------\n\n"
 
-while read -r || ([ -z "$REPLY" ] && [ $(($totalLines)) -ge $(($lineCtr-1)) ])
+while read -r || [ -n "$REPLY" ]
 do
     if [ -z "$REPLY" ]
     then
@@ -60,8 +62,8 @@ do
                 nameTmp="${nameArray[${#nameArray[@]}-1]}"
                 printf "Adding name '%s' to "containerConfiguration.txt" file.\n\n" $nameTmp
 
-                printf "Replacing line %i with generated name.\n" $(($lineCtr+1))
-                sed -i.backup "${lineCtr}c $nameTmp" $file
+                printf "Replacing line %i with generated name.\n" $(($lineCtr))
+                gsed -i.backup "${lineCtr}c $nameTmp" $file  # change back to sed!!!!!!!!!!!!!
 
                 echo "New container name added as: ${nameArray[${#nameArray[@]}-1]}"
                 arrayLineCtr=$(($arrayLineCtr+1))
@@ -98,10 +100,6 @@ do
     fi
     lineCtr=$(($lineCtr+1))
 done < $file
-
-echo "${nameArray[@]}"
-echo "${runCmdArray[@]}"
-echo "${imageArray[@]}"
 
 unset IFS
 
