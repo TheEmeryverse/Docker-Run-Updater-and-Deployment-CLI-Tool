@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e
+set -e # Errors will exit script
 
 IFS=''
 
@@ -41,7 +41,7 @@ do
         exit 1
     elif [ $numberOfPipes -eq 1 ]
     then
-        printf "WARNING, please make sure configuration file is formatted correctly for container %i.\nIf you left a blank run parameter the container will run with only the custom flags:\n%s\n" $(($totalContainerCtr+1)) $customFlags
+        printf "WARNING, please make sure configuration file is formatted correctly for container %i.\nIf you left a blank run parameter the container will run with only the custom flags:\n%s\n" $(($totalContainerCtr+1)) "$customFlags"
     fi
     for ((arrayLineCtr = 0; arrayLineCtr <= numberOfPipes; arrayLineCtr++))
     do
