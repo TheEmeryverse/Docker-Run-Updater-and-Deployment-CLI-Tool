@@ -16,7 +16,8 @@ imageArray=()
 
 lastChar=$(tail -c 1 $file)
 
-if [ -z $lastChar ]; then
+if [ -z $lastChar ]
+then
     printf "ERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
     exit 1
 else
@@ -32,55 +33,66 @@ printf "\n\n-----------------------------------------------------------\n| Gener
 while IFS='' read -r || [ -n "$REPLY" ]
 do
     numberOfPipes=$(echo "$REPLY" | tr -cd '|' | wc -c)
-    IFS='|' read -ra tmpArray <<< "$REPLY"
-    for (( arrayLineCtr=0; arrayLineCtr<=numberOfPipes; arrayLineCtr++ ))
+    IFS='|' read -ra tmpArray <<<"$REPLY"
+
+    for ((arrayLineCtr = 0; arrayLineCtr <= numberOfPipes; arrayLineCtr++))
     do
-        if [ -z ${$tmpArray[${arrayLineCtr}]} ]
+        if [ -z "${tmpArray[$arrayLineCtr]}" ]
         then
             printf "Empty line detected for container "
-            if [ $arrayLineCtr -eq 0 ] # if line is image
+            if [ $arrayLineCtr -eq 0 ]
             then
-                printf "\n\nERROR\n\nContainer %s has a blank image repo!! Please add an image repository. Exiting.\n\n" ${nameArray[$arrayLineCtr-1]}
+                # Image field is empty
+                printf "\n\nERROR\n\nContainer %s has a blank image repo!! Please add an image repository. Exiting.\n\n" "${nameArray[$totalContainerCtr - 1]}"
                 exit 1
-            elif [ $arrayLineCtr -eq 1 ] # if line is name
+            elif [ $arrayLineCtr -eq 1 ]
             then
-                printf "\n\nERROR\n\nContainer on line %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" ${totalContainerCtr}
-            if [ $arrayLineCtr -eq 2 ]
+                # Name field is empty
+                printf "\n\nERROR\n\nContainer on line %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" "$((totalContainerCtr + 1))"
+                exit 1
+            elif [ $arrayLineCtr -eq 2 ]
             then
-                printf "%i\n" $(($totalContainerCtr+1))
+                # Run command is empty
+                printf "%i\n" "$((totalContainerCtr + 1))"
                 runCmdArray+=("")
-                printf "Blank run command detected! Container will run with only set custom flags:\n'%s'\n" ${customFlags}
-                totalContainerCtr=${($totalContainerCtr+1)}
+                printf "Blank run command detected! Container will run with only set custom flags:\n'%s'\n" "${customFlags:-none}"
+                totalContainerCtr=$((totalContainerCtr + 1))
             fi
         else
-            if [ $arrayLineCtr -eq 0 ] # if line is image
+            if [ $arrayLineCtr -eq 0 ]
             then
-                imageArray+=(${$tmpArray[$arrayLineCtr]})
-            elif [ $arrayLineCtr -eq 1 ] # if line is name
+                # Image field
+                imageArray+=("${tmpArray[$arrayLineCtr]}")
+            elif [ $arrayLineCtr -eq 1 ]
             then
-                nameArray+=(${$tmpArray[$arrayLineCtr]})
-            elif [ $arrayLineCtr -eq 2 ] # If line is run commands
+                # Name field
+                nameArray+=("${tmpArray[$arrayLineCtr]}")
+            elif [ $arrayLineCtr -eq 2 ]
             then
-                runCmdArray+=(${$tmpArray[$arrayLineCtr]})
-
-                totalContainerCtr=${($totalContainerCtr+1)}
+                # Run command field
+                runCmdArray+=("${tmpArray[$arrayLineCtr]}")
+                totalContainerCtr=$((totalContainerCtr + 1))
             fi
         fi
     done
-done < $file
+done <"$file"
 
 unset IFS
 
 printf "\n\n--------------------------------------------------------------------------------------------\n| Successfully built arrays with container information. Moving to deploy and update phase! |\n--------------------------------------------------------------------------------------------\n\n\n"
 
-for ((i = 0; i < ${#nameArray[@]}; i++)); do
-    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]; then # Image is up to date
+for ((i = 0; i < ${#nameArray[@]}; i++))
+do
+    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
+    then # Image is up to date
         echo "${nameArray[i]} is up to date. Checking if it is running."                     # Checking if it is running
 
-        if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]; then # it is running
+        if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
+        then # it is running
             echo "${nameArray[i]} is up to date and running. Moving to next container."
         else                                                                   # it is not running
-            if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]; then # it does exist
+            if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
+            then # it does exist
                 docker start ${nameArray[i]}                                   # Start container
                 echo "${nameArray[i]} is now started, and is already up-to-date. Moving to next container."
             else # it does not exist
@@ -93,8 +105,10 @@ for ((i = 0; i < ${#nameArray[@]}; i++)); do
         echo "${nameArray[i]} is not up to date."
         echo "Pulling new image for ${nameArray[i]}." # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
-        if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]; then  # does it exist?
-            if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]; then # it is running?
+        if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
+        then  # does it exist?
+            if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
+            then # it is running?
                 echo "${nameArray[i]} is running and out-of-date. Shutting down out-of-date container."
                 docker stop ${nameArray[i]}
                 echo "${nameArray[i]} is now stopped."
