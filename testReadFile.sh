@@ -28,13 +28,17 @@ printf "File loaded is: %s and it contains: \n" $file
 
 cat -n $file
 
-printf "\n\n-----------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n-----------------------------------------------------------\n\n"
+printf "\n\n------------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n------------------------------------------------------------\n\n"
 
 while IFS='' read -r || [ -n "$REPLY" ]
 do
     numberOfPipes=$(echo "$REPLY" | tr -cd '|' | wc -c)
     IFS='|' read -ra tmpArray <<<"$REPLY"
-
+    if [ $numberOfPipes -eq 0 ]
+    then
+        printf "ERROR, container %i formatted incorrectly. Please use '|' to separate the image, name, and run parameters.\nSee example config file for more information.\n\n" $(($totalContainerCtr+1))
+        exit 1
+    fi
     for ((arrayLineCtr = 0; arrayLineCtr <= numberOfPipes; arrayLineCtr++))
     do
         if [ -z "${tmpArray[$arrayLineCtr]}" ]
