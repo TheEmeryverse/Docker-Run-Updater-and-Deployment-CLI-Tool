@@ -63,7 +63,7 @@ Once the check passes, runr.sh will then begin to read the container data to bui
 Once the arrays with the container data are complete, runr.sh moves to import them into docker.<br>
 Runr.sh will automatically detect if the container is running, and if it is using an out of date image.<br>
 If it finds the image the container is using is out of date, it will shut down the container and restart it using the new image.<br>
-Once all of the containers are checked runr.sh will prune unused images and purge old docker logs to save space on your computer.<br><br>
+Once all of the containers are checked runr.sh will prune unused images and purge old docker logs (logs only on GNU/Linux version) to save space on your computer.<br><br>
 NOTE: runr.sh will NOT detect if the run commands in the container data file for a container that is running are different than what is currently being used.<br><br>
 Runr.sh will ONLY redeploy containers if the image is out of date. If you want to change the run commands of an existing, up-to-date container, you must first manually shut it down and then run runr.sh with the updated run parameters.<br><br>
 Runr.sh also requires the docker daemon to be running, and will exit with an error message if it is not.
