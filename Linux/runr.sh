@@ -133,10 +133,12 @@ done <"$file"
 
 sleep 1
 
+tmpCtr=0
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 for ((i = 0; i <= ${#imageArray[@]}; i++))
 do
-    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $($i-1)
+    tmpCtr=$((i - 1))
+    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $tmpCtr
     printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
     printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$i]}
     if [ -z ${runCmdArray[$i]} ]
