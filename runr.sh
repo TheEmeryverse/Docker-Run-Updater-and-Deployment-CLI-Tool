@@ -1,5 +1,8 @@
 #! /bin/bash
+# Runr, a script to set, and forget.
+# Keep your docker containers up to date and deployed with this lightweight and easy to configure bash script!
 
+# Variable initialization
 set -e                              # Errors will exit script
 
 IFS=''                              # Ensure spaces don't break file parsing
@@ -18,6 +21,7 @@ configCtr=1
 printf "\nWelcome to Runr, the complete 'docker run' container updater and deployment tool.\n\nEasily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr keeps things simple and gives you peace of mind. Set, and forget.\n\n"
 printf "\n\nSTARTING"
 
+# Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
 do
     numberOfPipes=$(echo "$REPLY" | tr -cd '|' | wc -c) # count the number of pipes present to properly import config variables
@@ -59,6 +63,7 @@ cat -n $file                        # display container data file
 
 printf "\n\n------------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n------------------------------------------------------------\n"
 
+# Begin reading container data from file
 while IFS='' read -r || [ -n "$REPLY" ]                 # read file line by line
 do
     numberOfPipes=$(echo "$REPLY" | tr -cd '|' | wc -c) # count the number of pipes present to properly create arrays for containers
@@ -133,6 +138,7 @@ unset IFS
 
 printf "\n\n--------------------------------------------------------------------------------------------\n| Successfully built arrays with container information. Moving to deploy and update phase! |\n--------------------------------------------------------------------------------------------\n\n\n"
 
+# Begin updating and deploying containers
 printf "Checking if docker daemon is running.\n\n"
 if ! [ $(docker stats | grep -cim1 -i 'cannot connect') -eq 1 ]
 then
@@ -183,4 +189,6 @@ do
 done
 echo "All containers up to date and redeployed!"
 docker ps
+
+# Clean up and prune
 printf "Pruning all old unused images."
