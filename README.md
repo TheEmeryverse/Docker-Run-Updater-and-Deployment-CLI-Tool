@@ -1,7 +1,7 @@
 # runr.sh - the set and forget docker container updater
 A lightweight Bash script that automatically deploys and updates all your containers run with 'docker run'.
  
-Current release is fully compatible with MacOS Sequoia 15.2, Docker Desktop, and 'brew install docker'.
+Current release is fully compatible with Fedora 40 SE, MacOS Sequoia 15.2, Docker Desktop, and 'brew install docker'. Other Linux distributions should work, just ensure bash is being used to execute.
 
 <h2>Features:</h2>
 - An easy to use and simple to understand CLI tool to keep your docker containers deployed and updated.<br>
