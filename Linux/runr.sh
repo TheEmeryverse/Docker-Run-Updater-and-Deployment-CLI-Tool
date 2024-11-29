@@ -173,7 +173,7 @@ for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
-        printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is up to date.\n${MAGENTA}TASK${NORMAL}, checking if it is running." ${nameArray[i]}      # Checking if it is running
+        printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is up to date.\n${MAGENTA}TASK${NORMAL}, checking if it is running.\n" ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
             printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Moving to next container.\n\n" ${nameArray[i]}
@@ -183,29 +183,29 @@ do
                 docker start ${nameArray[i]}                                   # Start container
                 printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
             else    # it does not exist
-                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} container does not exist. Running new container with name ${GREEN}%s${NORMAL}" ${nameArray[i]} ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} container does not exist.\n${MAGENTA}TASK${NORMAL}, running new container with name ${GREEN}%s${NORMAL}.\n" ${nameArray[i]} ${nameArray[i]}
                 docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
                 printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
-        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is not up to date." ${nameArray[i]}
-        printf "${MAGENTA}TASK${NORMAL}, pulling new image for ${GREEN}%s${NORMAL}." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is not up to date.\n" ${nameArray[i]}
+        printf "${MAGENTA}TASK${NORMAL}, pulling new image for ${GREEN}%s${NORMAL}.\n" ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
         if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}." ${nameArray[i]} ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}.\n" ${nameArray[i]} ${nameArray[i]}
                 docker stop ${nameArray[i]}
-                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now stopped." ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now stopped.\n" ${nameArray[i]}
             fi
-            printf "${MAGENTA}TASK${NORMAL}, removing ${GREEN}%s${NORMAL}." ${nameArray[i]}
+            printf "${MAGENTA}TASK${NORMAL}, removing ${GREEN}%s${NORMAL}.\n" ${nameArray[i]}
             docker rm ${nameArray[i]}
         fi
-        printf "${MAGENTA}TASK${NORMAL}, starting ${GREEN}%s${NORMAL} with new image from %s" ${nameArray[i]} ${nameArray[i]}
+        printf "${MAGENTA}TASK${NORMAL}, starting ${GREEN}%s${NORMAL} with new image from %s\n" ${nameArray[i]} ${nameArray[i]}
         docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} started with updated image. Moving to next container." ${nameArray[i]}
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} started with updated image. Moving to next container.\n" ${nameArray[i]}
     fi
 done
 
