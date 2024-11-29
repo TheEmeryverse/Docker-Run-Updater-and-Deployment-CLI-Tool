@@ -219,4 +219,4 @@ sleep 2
 printf "${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
 docker system prune -a --volumes -f
 find /var/lib/docker/containers/ -type f -name "*.log" -delete
-printf "${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting runr.sh.\n\n"
+printf "\n\n${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting ${GREEN}runr.sh${NORMAL}.\n\n"
