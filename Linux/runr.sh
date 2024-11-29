@@ -137,7 +137,7 @@ tmpCtr=1
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 for ((i = 0; i < ${#imageArray[@]}; i++))
 do
-    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $tmpCtr
+    printf "\n\n${UNDERLINE}${GREEN}Container %i:${NORMAL}\n" $tmpCtr
     printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
     printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$i]}
     if [ -z ${runCmdArray[$i]} ]
@@ -173,39 +173,39 @@ for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
-        echo "${nameArray[i]} is up to date. Checking if it is running."       # Checking if it is running
+        echo "$\n{nameArray[i]} is up to date. Checking if it is running."       # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
-            printf "%s is up to date and running. Moving to next container." ${nameArray[i]}
+            printf "\n${GREEN}%s${NORMAL} is up to date and running. Moving to next container." ${nameArray[i]}
         else                                                                   # it is not running
             if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it does exist
                 docker start ${nameArray[i]}                                   # Start container
-                printf "%s is now started, and is already up-to-date. Moving to next container." ${nameArray[i]}
+                printf "\n${GREEN}%s${NORMAL} is now started, and is already up-to-date. Moving to next container." ${nameArray[i]}
             else    # it does not exist
-                printf "%s container does not exist. Running new container with name ${nameArray[i]}" ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} container does not exist. Running new container with name ${GREEN}%s${NORMAL}" ${nameArray[i]} ${nameArray[i]}
                 docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-                printf "%s is now running and up-to-date. Moving to next container." ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} is now running and up-to-date. Moving to next container." ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
-        printf "%s is not up to date." ${nameArray[i]}
-        printf "Pulling new image for %s." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
+        printf "${GREEN}%s${NORMAL} is not up to date." ${nameArray[i]}
+        printf "Pulling new image for ${GREEN}%s${NORMAL}." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
         if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                printf "%s is running and out-of-date. Shutting down out-of-date container." ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} is running and out-of-date. Shutting down out-of-date container." ${nameArray[i]}
                 docker stop ${nameArray[i]}
-                printf "%s is now stopped." ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} is now stopped." ${nameArray[i]}
             fi
             printf "Removing %s."
             docker rm ${nameArray[i]}
         fi
-        echo "Starting ${nameArray[i]} with new image from ${imageArray[i]}"
+        printf "Starting %s with new image from %s" ${nameArray[i]} ${nameArray[i]}
         docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-        echo "${nameArray[i]} started with updated image. Moving to next container."
+        printf "%s started with updated image. Moving to next container." ${nameArray[i]}
     fi
 done
 
