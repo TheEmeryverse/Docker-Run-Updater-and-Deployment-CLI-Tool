@@ -159,7 +159,7 @@ printf "\n--------------------------------------------------\n\n"
 sleep 0.5
 
 # Begin updating and deploying containers
-printf "${MAGENTA}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker${NORMAL}' command.\n\n"
+printf "\n${MAGENTA}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker${NORMAL}' command.\n\n"
 if [ $(docker ps | grep -cim1 -i 'cannot connect') -eq 1 ]
 then
     printf "\n${RED}ERROR${NORMAL}, docker daemon not running. Please start it and then restart this script.\n\n"
