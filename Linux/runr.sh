@@ -184,7 +184,7 @@ do
                 printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
             else    # it does not exist
                 printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} container does not exist.\n${MAGENTA}TASK${NORMAL}, running new container with name ${GREEN}%s${NORMAL}.\n" ${nameArray[i]} ${nameArray[i]}
-                docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
+                docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]} > /dev/null
                 printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
@@ -204,9 +204,10 @@ do
             docker rm ${nameArray[i]}
         fi
         printf "${MAGENTA}TASK${NORMAL}, starting ${GREEN}%s${NORMAL} with new image from %s\n" ${nameArray[i]} ${nameArray[i]}
-        docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
+        docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]} > /dev/null
         printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} started with updated image. Moving to next container.\n" ${nameArray[i]}
     fi
+    printf "\n--------------------------------------------------\n\n"
 done
 
 sleep 1
