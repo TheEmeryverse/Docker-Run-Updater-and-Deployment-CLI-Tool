@@ -173,7 +173,7 @@ for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
-        printf "$\n${GREEN}%s${NORMAL} is up to date. Checking if it is running." ${nameArray[i]}      # Checking if it is running
+        printf "\n${GREEN}%s${NORMAL} is up to date. Checking if it is running." ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
             printf "\n${GREEN}%s${NORMAL} is up to date and running. Moving to next container." ${nameArray[i]}
