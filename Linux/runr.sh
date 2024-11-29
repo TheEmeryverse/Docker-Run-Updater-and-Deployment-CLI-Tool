@@ -29,7 +29,7 @@ configCtr=1                         # track what line of the config file is curr
 clear
 printf "\n${BRIGHT}Welcome to Runr.sh, the complete bash-based 'docker run' container updater and deployment tool.\n\n${NORMAL}Easily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr.sh keeps things simple and gives you peace of mind. Set, and forget.\n\n"
 printf "${GREEN}STARTING${NORMAL} Runr.sh${NORMAL}"
-printf "\n--------------------------------------------------\n\n"
+printf "\n\n\n--------------------------------------------------\n"
 sleep 0.5
 # Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
@@ -73,7 +73,7 @@ fi
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
 sleep 1
-printf "\n--------------------------------------------------\n\n"
+printf "\n\n\n--------------------------------------------------"
 printf "\n\n${MAGENTA}TASK${NORMAL}, generating arrays based on contents of: ${UNDERLINE}%s${NORMAL}\n\n" $file
 
 sleep 1
