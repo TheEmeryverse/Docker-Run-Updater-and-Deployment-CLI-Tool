@@ -218,7 +218,7 @@ printf "\n\n"
 docker ps
 
 sleep 2
-printf "\n\n\n--------------------------------------------------\n\n"
+printf "\n\n--------------------------------------------------\n"
 printf "\n\n${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
 docker system prune -a --volumes -f
 find /var/lib/docker/containers/ -type f -name "*.log" -delete
