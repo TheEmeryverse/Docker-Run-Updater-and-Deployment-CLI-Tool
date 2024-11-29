@@ -1,2 +1,0 @@
-Container Data File|/path/to/config.txt
-Custom Flags|--restart=unless-stopped -e TZ=America/NewYork
