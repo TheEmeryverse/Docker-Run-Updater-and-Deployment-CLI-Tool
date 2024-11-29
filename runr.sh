@@ -134,9 +134,9 @@ unset IFS
 printf "\n\n--------------------------------------------------------------------------------------------\n| Successfully built arrays with container information. Moving to deploy and update phase! |\n--------------------------------------------------------------------------------------------\n\n\n"
 
 printf "Checking if docker daemon is running.\n\n"
-if [ $(docker | grep -cim1 -i 'cannot connect') -eq 1 ]
+if ! [ $(docker stats | grep -cim1 -i 'cannot connect') -eq 1 ]
 then
-    printf "ERROR, docker daemon not running. Please start and then restart this script.\n\n"
+    printf "\nERROR, docker daemon not running. Please start and then restart this script.\n\n"
     exit 1
 else
     printf "SUCCESS, docker daemon is running.\n\n"
@@ -183,3 +183,4 @@ do
 done
 echo "All containers up to date and redeployed!"
 docker ps
+printf "Pruning all old unused images."
