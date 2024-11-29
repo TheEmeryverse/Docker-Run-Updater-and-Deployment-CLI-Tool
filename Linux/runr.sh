@@ -176,16 +176,16 @@ do
         printf "\n${GREEN}%s${NORMAL} is up to date. Checking if it is running." ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
-            printf "\n${GREEN}%s${NORMAL} is up to date and running. Moving to next container." ${nameArray[i]}
+            printf "\n${GREEN}%s${NORMAL} is running. Moving to next container.\n\n" ${nameArray[i]}
         else                                                                   # it is not running
             if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it does exist
                 docker start ${nameArray[i]}                                   # Start container
-                printf "\n${GREEN}%s${NORMAL} is now started, and is already up-to-date. Moving to next container." ${nameArray[i]}
+                printf "\n${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
             else    # it does not exist
                 printf "${GREEN}%s${NORMAL} container does not exist. Running new container with name ${GREEN}%s${NORMAL}" ${nameArray[i]} ${nameArray[i]}
                 docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-                printf "${GREEN}%s${NORMAL} is now running and up-to-date. Moving to next container." ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
@@ -196,11 +196,11 @@ do
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                printf "${GREEN}%s${NORMAL} is running and out-of-date. Shutting down out-of-date container." ${nameArray[i]}
+                printf "${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}." ${nameArray[i]} ${nameArray[i]}
                 docker stop ${nameArray[i]}
                 printf "${GREEN}%s${NORMAL} is now stopped." ${nameArray[i]}
             fi
-            printf "Removing %s."
+            printf "Removing ${GREEN}%s${NORMAL}." ${nameArray[i]}
             docker rm ${nameArray[i]}
         fi
         printf "Starting ${GREEN}%s${NORMAL} with new image from %s" ${nameArray[i]} ${nameArray[i]}
@@ -219,4 +219,4 @@ sleep 2
 printf "\n\n${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
 docker system prune -a --volumes -f
 find /var/lib/docker/containers/ -type f -name "*.log" -delete
-printf "\n\n${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting ${GREEN}runr.sh${NORMAL}.\n\n"
+printf "\n${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting ${GREEN}runr.sh${NORMAL}.\n\n"
