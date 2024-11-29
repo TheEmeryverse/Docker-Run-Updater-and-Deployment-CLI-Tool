@@ -133,7 +133,7 @@ done <"$file"
 sleep 1
 printf "\n--------------------------------------------------\n\n"
 tmpCtr=1
-printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
+printf "\n${UNDERLINE}Result of array generation:${NORMAL}"
 for ((i = 0; i < ${#imageArray[@]}; i++))
 do
     printf "\n\n${UNDERLINE}${GREEN}Container %i:${NORMAL}\n" $tmpCtr
@@ -212,6 +212,7 @@ done
 sleep 1
 
 printf "\n\n${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!\n\n"
+printf "\n\n"
 docker ps
 
 sleep 2
