@@ -173,45 +173,45 @@ for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
-        printf "\n${GREEN}%s${NORMAL} is up to date. Checking if it is running." ${nameArray[i]}      # Checking if it is running
+        printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is up to date.\n${MAGENTA}TASK${NORMAL}, checking if it is running." ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
-            printf "\n${GREEN}%s${NORMAL} is running. Moving to next container.\n\n" ${nameArray[i]}
+            printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Moving to next container.\n\n" ${nameArray[i]}
         else                                                                   # it is not running
             if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it does exist
                 docker start ${nameArray[i]}                                   # Start container
-                printf "\n${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
+                printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
             else    # it does not exist
-                printf "${GREEN}%s${NORMAL} container does not exist. Running new container with name ${GREEN}%s${NORMAL}" ${nameArray[i]} ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} container does not exist. Running new container with name ${GREEN}%s${NORMAL}" ${nameArray[i]} ${nameArray[i]}
                 docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-                printf "${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
-        printf "${GREEN}%s${NORMAL} is not up to date." ${nameArray[i]}
-        printf "Pulling new image for ${GREEN}%s${NORMAL}." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is not up to date." ${nameArray[i]}
+        printf "${MAGENTA}TASK${NORMAL}, pulling new image for ${GREEN}%s${NORMAL}." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
         if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                printf "${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}." ${nameArray[i]} ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}." ${nameArray[i]} ${nameArray[i]}
                 docker stop ${nameArray[i]}
-                printf "${GREEN}%s${NORMAL} is now stopped." ${nameArray[i]}
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now stopped." ${nameArray[i]}
             fi
-            printf "Removing ${GREEN}%s${NORMAL}." ${nameArray[i]}
+            printf "${MAGENTA}TASK${NORMAL}, removing ${GREEN}%s${NORMAL}." ${nameArray[i]}
             docker rm ${nameArray[i]}
         fi
-        printf "Starting ${GREEN}%s${NORMAL} with new image from %s" ${nameArray[i]} ${nameArray[i]}
+        printf "${MAGENTA}TASK${NORMAL}, starting ${GREEN}%s${NORMAL} with new image from %s" ${nameArray[i]} ${nameArray[i]}
         docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-        printf "${GREEN}%s${NORMAL} started with updated image. Moving to next container." ${nameArray[i]}
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} started with updated image. Moving to next container." ${nameArray[i]}
     fi
 done
 
 sleep 1
 
-printf "$\n\n${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!\n\n"
+printf "\n\n${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!\n\n"
 docker ps
 
 sleep 2
