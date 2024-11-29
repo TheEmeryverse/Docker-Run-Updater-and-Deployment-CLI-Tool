@@ -135,7 +135,7 @@ sleep 1
 
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 tmpCtr=0
-for ((i = 1; i<=${#imageArray[@]+1}; i++))
+for ((i = 1; i <= ${#{imageArray[@]}+1}; i++))
 do
     tmpCtr=$(($i-1))
     printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $i
