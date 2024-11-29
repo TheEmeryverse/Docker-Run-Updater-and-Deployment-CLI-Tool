@@ -1,4 +1,1 @@
-docker.io/hello-world|myContainer|-p 6060:6060 -v /path/to/data/config:/config -e variable=value
-uscr.io/unixserver/flex:latest|flexDocker|-p 32401:32401 -v /path/to/media/movies:/movies
-myImage|myOriginalContainer395
-docker.io/awesomeContainer|theBestContainerName|
+docker.io/hello-world|helloworld|-p 4935:4935

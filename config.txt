@@ -1,2 +1,2 @@
-dataFile|sampleContainerData.txt
-customFlags|-e TZ=America/Chicago --restart=unless-stopped
+Location of container data file|sampleContainerData.txt
+Always-on container flags|-e TZ=America/Chicago --restart=unless-stopped
