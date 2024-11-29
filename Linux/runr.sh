@@ -134,7 +134,7 @@ done <"$file"
 sleep 1
 
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
-for ((i = 0; i <= $(imageArray[@]); i++))
+for ((i = 0; i <= $imageArray[@]; i++))
 do
     printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $($i-1)
     printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
