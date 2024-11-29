@@ -173,7 +173,7 @@ for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
-        echo "$\n{nameArray[i]} is up to date. Checking if it is running."       # Checking if it is running
+        printf "$\n${GREEN}%s${NORMAL} is up to date. Checking if it is running." ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
             printf "\n${GREEN}%s${NORMAL} is up to date and running. Moving to next container." ${nameArray[i]}
@@ -203,9 +203,9 @@ do
             printf "Removing %s."
             docker rm ${nameArray[i]}
         fi
-        printf "Starting %s with new image from %s" ${nameArray[i]} ${nameArray[i]}
+        printf "Starting ${GREEN}%s${NORMAL} with new image from %s" ${nameArray[i]} ${nameArray[i]}
         docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-        printf "%s started with updated image. Moving to next container." ${nameArray[i]}
+        printf "${GREEN}%s${NORMAL} started with updated image. Moving to next container." ${nameArray[i]}
     fi
 done
 
