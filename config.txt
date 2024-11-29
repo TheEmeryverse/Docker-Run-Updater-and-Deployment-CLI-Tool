@@ -1,2 +1,2 @@
-CONTAINER_CONFIG|samplecontainerConfig.txt
-CUSTOM_RUN_PARAMETERS|-e TZ=America/Chicago --restart=unless-stopped
+dataFile|sampleContainerData.txt
+customFlags|-e TZ=America/Chicago --restart=unless-stopped
