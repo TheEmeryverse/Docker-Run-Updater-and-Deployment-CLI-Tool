@@ -174,31 +174,31 @@ do
         echo "${nameArray[i]} is up to date. Checking if it is running."       # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
-            echo "${nameArray[i]} is up to date and running. Moving to next container."
+            printf "%s is up to date and running. Moving to next container." ${nameArray[i]}
         else                                                                   # it is not running
             if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it does exist
                 docker start ${nameArray[i]}                                   # Start container
-                echo "${nameArray[i]} is now started, and is already up-to-date. Moving to next container."
+                printf "%s is now started, and is already up-to-date. Moving to next container." ${nameArray[i]}
             else    # it does not exist
-                echo "${nameArray[i]} container does not exist. Running new container with name ${nameArray[i]}"
+                printf "%s container does not exist. Running new container with name ${nameArray[i]}" ${nameArray[i]}
                 docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-                echo "${nameArray[i]} is now running and up-to-date. Moving to next container."
+                printf "%s is now running and up-to-date. Moving to next container." ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
-        echo "${nameArray[i]} is not up to date."
-        echo "Pulling new image for ${nameArray[i]}."                           # If not up to date, shut down and remove, then redeploy with updated container
+        printf "%s is not up to date." ${nameArray[i]}
+        printf "Pulling new image for %s." ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
         if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                echo "${nameArray[i]} is running and out-of-date. Shutting down out-of-date container."
+                printf "%s is running and out-of-date. Shutting down out-of-date container." ${nameArray[i]}
                 docker stop ${nameArray[i]}
-                echo "${nameArray[i]} is now stopped."
+                printf "%s is now stopped." ${nameArray[i]}
             fi
-            echo "Removing ${nameArray[i]}."
+            printf "Removing %s."
             docker rm ${nameArray[i]}
         fi
         echo "Starting ${nameArray[i]} with new image from ${imageArray[i]}"
@@ -209,7 +209,7 @@ done
 
 sleep 1
 
-echo "${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!"
+printf "$\n\n{GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!"
 docker ps
 
 sleep 2
@@ -217,5 +217,4 @@ sleep 2
 printf "${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
 docker system prune -a --volumes -f
 find /var/lib/docker/containers/ -type f -name "*.log" -delete
-printf "${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting runr.sh."
-exit 0
+printf "${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting runr.sh.\n\n"
