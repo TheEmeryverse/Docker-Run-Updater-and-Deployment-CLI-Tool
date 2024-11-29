@@ -27,12 +27,10 @@ imageArray=()                       # array to be generated of the container ima
 configCtr=1                         # track what line of the config file is currently being read
 
 clear
-
 printf "\n${BRIGHT}Welcome to Runr.sh, the complete bash-based 'docker run' container updater and deployment tool.\n\n${NORMAL}Easily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr.sh keeps things simple and gives you peace of mind. Set, and forget.\n\n"
-printf "${GREEN}STARTING${NORMAL} Runr.sh${NORMAL}"
-
+printf "\n${GREEN}STARTING${NORMAL} Runr.sh${NORMAL}"
+printf "\n\n\n--------------------------------------------------\n"
 sleep 0.5
-
 # Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
 do
@@ -75,6 +73,7 @@ fi
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
 sleep 1
+printf "\n\n\n--------------------------------------------------\n"
 printf "\n\n${MAGENTA}TASK${NORMAL}, generating arrays based on contents of: ${UNDERLINE}%s${NORMAL}\n\n" $file
 
 sleep 1
@@ -132,35 +131,35 @@ do
 done <"$file"
 
 sleep 1
-
-printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
-tmpCtr=0
-for ((i = 1; i <= ${#imageArray[@]+1}; i++))
+printf "\n--------------------------------------------------\n\n"
+tmpCtr=1
+printf "\n${UNDERLINE}Result of array generation:${NORMAL}"
+for ((i = 0; i < ${#imageArray[@]}; i++))
 do
-    tmpCtr=$(($i-1))
-    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $i
-    printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$tmpCtr]}
-    printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$tmpCtr]}
-    if [ -z ${runCmdArray[$tmpCtr]} ]
+    printf "\n\n${UNDERLINE}${GREEN}Container %i:${NORMAL}\n" $tmpCtr
+    printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
+    printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$i]}
+    if [ -z ${runCmdArray[$i]} ]
     then
         printf "${BRIGHT}Run parameters:${NORMAL}\n%s ${BRIGHT}and no additional parameters.${NORMAL}\n" "$customFlags"
     else
-        printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$tmpCtr]} "$customFlags"
+        printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$i]} "$customFlags"
     fi
-    printf "\n----------------------------------------"
+    printf "\n--------------------------------------------------"
     sleep .25
+    tmpCtr=$((tmpCtr + 1))
 done
 
 unset IFS
 
 sleep 0.5
 
-printf "\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
-
+printf "\n\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
+printf "\n--------------------------------------------------\n\n"
 sleep 0.5
 
 # Begin updating and deploying containers
-printf "${MAGENTA}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker${NORMAL}' command.\n\n"
+printf "\n${MAGENTA}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker${NORMAL}' command.\n\n"
 if [ $(docker ps | grep -cim1 -i 'cannot connect') -eq 1 ]
 then
     printf "\n${RED}ERROR${NORMAL}, docker daemon not running. Please start it and then restart this script.\n\n"
@@ -168,56 +167,58 @@ then
 else
     printf "${GREEN}SUCCESS${NORMAL}, docker daemon is running.\n\n"
 fi
-
+printf "\n--------------------------------------------------\n\n"
 for ((i = 0; i < ${#nameArray[@]}; i++))
 do
-    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
+    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -ge 1 ]
     then            # Image is up to date
-        echo "${nameArray[i]} is up to date. Checking if it is running."       # Checking if it is running
+        printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is up to date.\n${MAGENTA}TASK${NORMAL}, checking if it is running.\n" ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # it is running
-            echo "${nameArray[i]} is up to date and running. Moving to next container."
+            printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Moving to next container.\n\n" ${nameArray[i]}
         else                                                                   # it is not running
             if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it does exist
                 docker start ${nameArray[i]}                                   # Start container
-                echo "${nameArray[i]} is now started, and is already up-to-date. Moving to next container."
+                printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now started. Moving to next container.\n\n" ${nameArray[i]}
             else    # it does not exist
-                echo "${nameArray[i]} container does not exist. Running new container with name ${nameArray[i]}"
-                docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-                echo "${nameArray[i]} is now running and up-to-date. Moving to next container."
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} container does not exist.\n${MAGENTA}TASK${NORMAL}, running new container with name ${GREEN}%s${NORMAL}.\n" ${nameArray[i]} ${nameArray[i]}
+                docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]} > /dev/null
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
     else            # Image is not up to date
-        echo "${nameArray[i]} is not up to date."
-        echo "Pulling new image for ${nameArray[i]}."                           # If not up to date, shut down and remove, then redeploy with updated container
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is not up to date.\n" ${nameArray[i]}
+        printf "${MAGENTA}TASK${NORMAL}, pulling new image for ${GREEN}%s${NORMAL}.\n" ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
         if [ $(docker ps -a | grep -cim1 "${nameArray[i]}$") -eq 1 ]
         then        # does it exist?
             if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
             then    # it is running?
-                echo "${nameArray[i]} is running and out-of-date. Shutting down out-of-date container."
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is running. Shutting down ${GREEN}%s${NORMAL}.\n" ${nameArray[i]} ${nameArray[i]}
                 docker stop ${nameArray[i]}
-                echo "${nameArray[i]} is now stopped."
+                printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now stopped.\n" ${nameArray[i]}
             fi
-            echo "Removing ${nameArray[i]}."
+            printf "${MAGENTA}TASK${NORMAL}, removing ${GREEN}%s${NORMAL}.\n" ${nameArray[i]}
             docker rm ${nameArray[i]}
         fi
-        echo "Starting ${nameArray[i]} with new image from ${imageArray[i]}"
-        docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]}
-        echo "${nameArray[i]} started with updated image. Moving to next container."
+        printf "${MAGENTA}TASK${NORMAL}, starting ${GREEN}%s${NORMAL} with new image from %s\n" ${nameArray[i]} ${nameArray[i]}
+        docker run -d --name=${nameArray[i]} ${customFlags} ${runCmdArray[i]} ${imageArray[i]} > /dev/null
+        printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} started with updated image. Moving to next container.\n" ${nameArray[i]}
     fi
+    printf "\n--------------------------------------------------\n\n"
 done
 
 sleep 1
 
-echo "${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!"
+printf "\n\n${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!\n\n"
+printf "\n"
+printf "\n--------------------------------------------------\n\n"
+printf "\n\n"
 docker ps
 
 sleep 2
-
-printf "${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
+printf "\n\n--------------------------------------------------\n"
+printf "\n\n${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
 docker system prune -a --volumes -f
-find /var/lib/docker/containers/ -type f -name "*.log" -delete
-printf "${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting runr.sh."
-exit 0
+printf "\n${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting ${GREEN}runr.sh${NORMAL}.\n\n"
