@@ -133,11 +133,10 @@ done <"$file"
 
 sleep 1
 
-tmpCtr=0
+tmpCtr=1
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 for ((i = 0; i <= ${#imageArray[@]}; i++))
 do
-    tmpCtr=$((i - 1))
     printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $tmpCtr
     printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
     printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$i]}
@@ -149,6 +148,7 @@ do
     fi
     printf "\n----------------------------------------"
     sleep .25
+    tmpCtr=$((tmpCtr + 1))
 done
 
 unset IFS
