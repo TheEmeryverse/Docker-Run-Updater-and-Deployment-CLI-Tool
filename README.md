@@ -10,7 +10,7 @@ Current release is fully compatible with Fedora 40 SE, MacOS Sequoia 15.2, Docke
 - Follow along and troubleshoot with detailed error messages so you can get up and running fast.<br>
 
 <h2>Requirements:</h2>
-- A terminal, running zsh or bash, that has basic tools like 'grep', 'wc', and 'tail', and 'tr'. These are almost certainly installed on your system.<br>
+- A terminal, running zsh or bash, that has basic tools like 'grep', 'wc', 'tail', and 'tr'. These are almost certainly installed on your system.<br>
 - MacOS Sequoia 15.2, GNU/Linux with > Bash 3.2 and docker.<br>
 - A text editor, such as VSCode, vim, nano, etc.<br>
 - OPTIONAL (But highly recommended!): CRON familiarity. Read about CRON here: <a href="https://www.howtogeek.com/devops/what-is-a-cron-job-and-how-do-you-use-them/">here</a><br>
