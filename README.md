@@ -60,7 +60,7 @@ If all of your configuration is complete, runr.sh can be run with 'bash runr.sh'
 First, runr.sh checks the config.txt file to make sure it is properly formatted.<br>
 If it is, it then reads the container data file specified in config.txt and checks to see if it is properly formatted.<br>
 Once the check passes, runr.sh will then begin to read the container data to build the containers.<br>
-Once the arrays with the container data are complete, runr.sh moves to importing them into docker.<br>
+Once the arrays with the container data are complete, runr.sh moves to import them into docker.<br>
 Runr.sh will automatically detect if the container is running, and if it is using an out of date image.<br>
 If it finds the image the container is using is out of date, it will shut down the container and restart it using the new image.<br>
 Once all of the containers are checked runr.sh will prune unused images and purge old docker logs to save space on your computer.<br><br>
