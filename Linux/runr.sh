@@ -134,18 +134,16 @@ done <"$file"
 sleep 1
 
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
-tmpCtr=0
-for ((i = 1; i <= $(#imageArray[@]+1); i++))
+for ((i = 0; i <= $(imageArray[@]); i++))
 do
-    tmpCtr=$(($i-1))
-    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $i
-    printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$tmpCtr]}
-    printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$tmpCtr]}
-    if [ -z ${runCmdArray[$tmpCtr]} ]
+    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $($i-1)
+    printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$i]}
+    printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$i]}
+    if [ -z ${runCmdArray[$i]} ]
     then
         printf "${BRIGHT}Run parameters:${NORMAL}\n%s ${BRIGHT}and no additional parameters.${NORMAL}\n" "$customFlags"
     else
-        printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$tmpCtr]} "$customFlags"
+        printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$i]} "$customFlags"
     fi
     printf "\n----------------------------------------"
     sleep .25
