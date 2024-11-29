@@ -30,7 +30,7 @@ Notice the pipe '|' separator being used, it is critical that this is present in
 <h3>The first line of config.txt</h3>
 The first line of the config.txt file is for the location of the container data file that runr.sh will build your containers from.<br>
 It is recommended to keep the container data file in the same folder as runr.sh, but you can put it anywhere as long as you specify the correct path.<br><br>
-An example first line of config.txt is where the container data is NOT in the same folder as runr.sh is:<br><br>
+An example first line of config.txt for when the container data is NOT in the same folder as runr.sh is:<br><br>
 Location of container data file|/home/yourAccount/data/containerData.txt<br><br>
 NOTE: Do not put quotes around the path or a space after the '|' separator.<br>
 <h3>The second line of config.txt</h3>
