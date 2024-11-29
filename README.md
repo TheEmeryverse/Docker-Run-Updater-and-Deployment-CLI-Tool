@@ -66,6 +66,6 @@ If it finds the image the container is using is out of date, it will shut down t
 Once all of the containers are checked runr.sh will prune unused images and purge old docker logs (logs only on GNU/Linux version) to save space on your computer.<br><br>
 <h2>Other information</h2>
 NOTE: runr.sh will NOT detect if the run commands in the container data file for a container that is running are different than what is currently being used.<br><br>
-Runr.sh will ONLY redeploy containers if the image is out of date. If you want to change the run commands of an existing, up-to-date container, you must first manually shut it down and then run runr.sh with the updated run parameters.<br><br>
+Runr.sh will ONLY redeploy containers if the image is out of date. If you want to change the run commands of an existing, up-to-date container, you must first manually shut it down with 'docker stop', remove it with 'docker rm', and then run runr.sh with the updated run parameters.<br><br>
 Runr.sh also requires the docker daemon to be running, and will exit with an error message if it is not.<br><br>
 Runr.sh will run all containers with the docker run flag '-d'. This means you will have to use the 'docker logs' command if you need access to container logs. 
