@@ -1,9 +1,17 @@
 #! /bin/bash
-# Runr, a script to set, and forget.
+# Runr.sh, a script to set, and forget.
 # Keep your docker containers up to date and deployed with this lightweight and easy to configure bash script!
 
 # Variable initialization
 set -e                              # Errors will exit script
+
+RED=$(tput setaf 1)                 # Initialize terminal colors
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+UNDERLINE=$(tput smul)
+NORMAL=$(tput sgr0)
+BLINK=$(tput blink)
+BRIGHT=$(tput bold)
 
 IFS=''                              # Ensure spaces don't break file parsing
 
@@ -18,8 +26,8 @@ imageArray=()                       # array to be generated of the container ima
 
 configCtr=1
 
-printf "\nWelcome to Runr, the complete 'docker run' container updater and deployment tool.\n\nEasily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr keeps things simple and gives you peace of mind. Set, and forget.\n\n"
-printf "\n\nSTARTING"
+printf "\n${BRIGHT}Welcome to Runr.sh, the complete bash-based 'docker run' container updater and deployment tool.\n\n${NORMAL}Easily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr.sh keeps things simple and gives you peace of mind. Set, and forget.\n\n"
+printf "${GREEN}STARTING${NORMAL} Runr.sh"
 
 # Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
@@ -28,22 +36,22 @@ do
     IFS='|' read -ra tmpArray <<<"$REPLY"               # create arrays by '|' separator
     if [ $numberOfPipes -eq 1 ] && [ $configCtr -eq 1 ]                         # check if config file has the proper amount of '|' separators per line
     then
-        printf "\n\nSUCCESS, 'config.txt' properly configured.\n\n"
+        printf "\n\n${GREEN}SUCCESS${NORMAL}, 'config.txt' properly configured.\n\n"
     elif [ $numberOfPipes -ge 2 ]
     then
-        printf "ERROR, 'config.txt' is incorrectly formatted. Please refer to github or example_config.txt for more information on setting up config.txt\n\n"
+        printf "${RED}ERROR${NORMAL}, 'config.txt' is incorrectly formatted. Please refer to github or example_config.txt for more information on setting up config.txt\n\n"
         exit 1
     fi
     if [ $configCtr -eq 1 ]                             # add container data file location
     then
-        printf "Adding container data file '%s'\n\n" ${tmpArray[1]}
+        printf "${BRIGHT}TASK${NORMAL}, adding container data file '%s'\n\n" ${tmpArray[1]}
         file=${tmpArray[1]}
     elif [ $configCtr -eq 2 ]                           # add custom flags
     then
-        printf "Adding custom flags to every run command:\n'%s'\n" ${tmpArray[1]}
+        printf "${BRIGHT}TASK${NORMAL}, adding custom flags to every run command:\n'%s'\n" ${tmpArray[1]}
         customFlags=${tmpArray[1]}
     else
-        printf "ERROR, too many lines detected in config.txt. Refer to github or to the exampleconfig.txt for a proper config.txt\n\n"
+        printf "${RED}ERROR${NORMAL}, too many lines detected in config.txt. Refer to github or to the exampleconfig.txt for a proper config.txt\n\n"
         exit 1
     fi
     configCtr=$(($configCtr+1))
@@ -52,13 +60,13 @@ done <"$configFile"
 lastChar=$(tail -c 1 $file)         # check if the file is properly formatted without an empty line at the bottom
 if [ -z $lastChar ]
 then
-    printf "\nERROR, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
+    printf "\n${RED}ERROR${NORMAL}, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
     exit 1                          # exit if blank line detected at end of file
 else
-    printf "\nFile passed last line check.\n\n"
+    printf "\n${GREEN}SUCCESS${NORMAL}, file passed last line check.\n\n"
 fi
 
-printf "File loaded is: %s\n\n" $file
+printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
 
 printf "\n\n------------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n------------------------------------------------------------\n"
@@ -70,33 +78,33 @@ do
     IFS='|' read -ra tmpArray <<<"$REPLY"               # create arrays by '|' separator
     if [ $numberOfPipes -eq 0 ]
     then
-        printf "ERROR, container %i formatted incorrectly. You need at least the image repo and the container's name.\nPlease use '|' to separate the image, name, and run parameters.\nSee example config file on github for more information.\n\n" $(($totalContainerCtr+1))
+        printf "${RED}ERROR${NORMAL}, container %i formatted incorrectly. You need at least the image repo and the container's name.\nPlease use '|' to separate the image, name, and run parameters.\nSee example config file on github for more information.\n\n" $(($totalContainerCtr+1))
         exit 1                                          # exit if missing image or name of the container or using improper separator
     elif [ $numberOfPipes -eq 1 ]                       # missing run command, fill tmpArray run parameter position with empty string
     then
         tmpArray[2]=""
     elif [ $numberOfPipes -ge 3 ]                       # check for too many '|' separators
     then
-        printf "ERROR, too many '|' separators found in container %i!! Please review example file on github.\n" $totalContainerCtr
+        printf "${RED}ERROR${NORMAL}, too many '|' separators found in container %i!! Please review example file on github.\n" $totalContainerCtr
     fi
     for ((arrayLineCtr = 0; arrayLineCtr <= 2; arrayLineCtr++)) # iterate through the line by the number of pipes present
     do
         if [ -z "${tmpArray[$arrayLineCtr]}" ]          # check if array content is empty
         then
-            printf "\nWARNING, empty line detected for container "
+            printf "\n${YELLOW}WARNING${NORMAL}, empty line detected for container "
             if [ $arrayLineCtr -eq 0 ]
             then        # Image field is empty
-                printf "\n\nERROR\n\nContainer %s has a blank image repo!! Please add an image repository. Exiting.\n\n" "${nameArray[$totalContainerCtr - 1]}"
+                printf "\n\n${RED}ERROR${NORMAL}\n\nContainer %s has a blank image repo!! Please add an image repository. Exiting.\n\n" "${nameArray[$totalContainerCtr - 1]}"
                 exit 1  # missing image repo found
             elif [ $arrayLineCtr -eq 1 ]
             then        # Name field is empty
-                printf "\n\nERROR\n\nContainer on line %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" "$((totalContainerCtr + 1))"
+                printf "\n\n${RED}ERROR${NORMAL}\n\nContainer on line %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" "$((totalContainerCtr + 1))"
                 exit 1  # missing name found
             elif [ $arrayLineCtr -eq 2 ]
             then        # Run command is empty
-                printf "%i\n" "$((totalContainerCtr + 1))"
+                printf "%i.\n" "$((totalContainerCtr + 1))"
                 runCmdArray+=("")
-                printf "Blank run command detected! Container will run with only set custom flags:\n'%s'\n" "${customFlags:-none}"
+                printf "${BRIGHT}INFO${NORMAL}, container will run with only set custom flags:\n'%s'\n" "$customFlags"
                 totalContainerCtr=$((totalContainerCtr + 1))
             fi
         else
@@ -115,22 +123,20 @@ do
     done
 done <"$file"
 
-printf "\n---------------------------\n"
-printf "Result of array generation:"
-printf "\n---------------------------"
+printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 
 tmpCtr=0
 for ((i = 1; i <= ${#imageArray[@]+1}; i++))
 do
     tmpCtr=$(($i-1))
-    printf "\n\nContainer %i:\n\n" $i
-    printf "Image:\n%s\n\n" ${imageArray[$tmpCtr]}
-    printf "Name:\n%s\n\n" ${nameArray[$tmpCtr]}
+    printf "\n\n${UNDERLINE}Container %i:${NORMAL}\n" $i
+    printf "${BRIGHT}Name:${NORMAL}\n%s\n" ${nameArray[$tmpCtr]}
+    printf "${BRIGHT}Image:${NORMAL}\n%s\n" ${imageArray[$tmpCtr]}
     if [ -z ${runCmdArray[$tmpCtr]} ]
     then
-        printf "Run parameters:\nLeft blank\n"
+        printf "${BRIGHT}Run parameters:${NORMAL}\n%s ${BRIGHT}and no additional parameters.${NORMAL}\n" "$customFlags"
     else
-        printf "Run parameters:\n%s\n" ${runCmdArray[$tmpCtr]}
+        printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$tmpCtr]} "$customFlags"
     fi
     printf "\n----------------------------------------"
 done
@@ -139,13 +145,13 @@ unset IFS
 printf "\n\n--------------------------------------------------------------------------------------------\n| Successfully built arrays with container information. Moving to deploy and update phase! |\n--------------------------------------------------------------------------------------------\n\n\n"
 
 # Begin updating and deploying containers
-printf "Checking if docker daemon is running.\n\n"
-if ! [ $(docker stats | grep -cim1 -i 'cannot connect') -eq 1 ]
+printf "${BRIGHT}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker stats${NORMAL}' command.\n\n"
+if ! [ $(docker stats | grep -cim1 -i 'Cannot connect') -eq 1 ]
 then
-    printf "\nERROR, docker daemon not running. Please start and then restart this script.\n\n"
+    printf "\n${RED}ERROR${NORMAL}, docker daemon not running. Please start it and then restart this script.\n\n"
     exit 1
 else
-    printf "SUCCESS, docker daemon is running.\n\n"
+    printf "${GREEN}SUCCESS${NORMAL}, docker daemon is running.\n\n"
 fi
 
 for ((i = 0; i < ${#nameArray[@]}; i++))
@@ -187,7 +193,7 @@ do
         echo "${nameArray[i]} started with updated image. Moving to next container."
     fi
 done
-echo "All containers up to date and redeployed!"
+echo "${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!"
 docker ps
 
 # Clean up and prune
