@@ -10,8 +10,8 @@ GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
 UNDERLINE=$(tput smul)
 NORMAL=$(tput sgr0)
-BLINK=$(tput blink)
 BRIGHT=$(tput bold)
+MAGENTA=$(tput setaf 5)
 
 IFS=''                              # Ensure spaces don't break file parsing
 
@@ -24,10 +24,14 @@ nameArray=()                        # array to be generated of the container nam
 runCmdArray=()                      # array to be generated of the container run parameters
 imageArray=()                       # array to be generated of the container images
 
-configCtr=1
+configCtr=1                         # track what line of the config file is currently being read
+
+clear
 
 printf "\n${BRIGHT}Welcome to Runr.sh, the complete bash-based 'docker run' container updater and deployment tool.\n\n${NORMAL}Easily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr.sh keeps things simple and gives you peace of mind. Set, and forget.\n\n"
-printf "${GREEN}STARTING${NORMAL} Runr.sh"
+printf "${GREEN}STARTING${NORMAL} Runr.sh${NORMAL}"
+
+sleep 0.5
 
 # Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
@@ -39,16 +43,16 @@ do
         printf "\n\n${GREEN}SUCCESS${NORMAL}, 'config.txt' properly configured.\n\n"
     elif [ $numberOfPipes -ge 2 ]
     then
-        printf "${RED}ERROR${NORMAL}, 'config.txt' is incorrectly formatted. Please refer to github or example_config.txt for more information on setting up config.txt\n\n"
+        printf "${RED}ERROR${NORMAL}, 'config.txt' is incorrectly formatted with too many '|'. Please refer to github or example_config.txt for more information on setting up config.txt\n\n"
         exit 1
     fi
     if [ $configCtr -eq 1 ]                             # add container data file location
     then
-        printf "${BRIGHT}TASK${NORMAL}, adding container data file '%s'\n\n" ${tmpArray[1]}
+        printf "${MAGENTA}TASK${NORMAL}, adding container data file '%s'\n\n" ${tmpArray[1]}
         file=${tmpArray[1]}
     elif [ $configCtr -eq 2 ]                           # add custom flags
     then
-        printf "${BRIGHT}TASK${NORMAL}, adding custom flags to every run command:\n'%s'\n" ${tmpArray[1]}
+        printf "${MAGENTA}TASK${NORMAL}, adding custom flags to every run command:\n'%s'\n\n" ${tmpArray[1]}
         customFlags=${tmpArray[1]}
     else
         printf "${RED}ERROR${NORMAL}, too many lines detected in config.txt. Refer to github or to the exampleconfig.txt for a proper config.txt\n\n"
@@ -56,6 +60,8 @@ do
     fi
     configCtr=$(($configCtr+1))
 done <"$configFile"
+
+sleep 1
 
 lastChar=$(tail -c 1 $file)         # check if the file is properly formatted without an empty line at the bottom
 if [ -z $lastChar ]
@@ -68,8 +74,10 @@ fi
 
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
+sleep 1
+printf "\n\n${MAGENTA}TASK${NORMAL}, generating arrays based on contents of: ${UNDERLINE}%s${NORMAL}\n\n" $file
 
-printf "\n\n------------------------------------------------------------\n| Generating arrays based on 'containerConfigurations.txt' |\n------------------------------------------------------------\n"
+sleep 1
 
 # Begin reading container data from file
 while IFS='' read -r || [ -n "$REPLY" ]                 # read file line by line
@@ -91,20 +99,20 @@ do
     do
         if [ -z "${tmpArray[$arrayLineCtr]}" ]          # check if array content is empty
         then
-            printf "\n${YELLOW}WARNING${NORMAL}, empty line detected for container "
+            printf "\n${YELLOW}WARNING${NORMAL}, empty spot detected for container "
             if [ $arrayLineCtr -eq 0 ]
             then        # Image field is empty
-                printf "\n\n${RED}ERROR${NORMAL}\n\nContainer %s has a blank image repo!! Please add an image repository. Exiting.\n\n" "${nameArray[$totalContainerCtr - 1]}"
+                printf "\n\n${RED}ERROR${NORMAL}, container %s has a blank image repo!! Please add an image repository. Exiting.\n\n" "${nameArray[$totalContainerCtr - 1]}"
                 exit 1  # missing image repo found
             elif [ $arrayLineCtr -eq 1 ]
             then        # Name field is empty
-                printf "\n\n${RED}ERROR${NORMAL}\n\nContainer on line %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" "$((totalContainerCtr + 1))"
+                printf "\n\n${RED}ERROR${NORMAL}, container %i has a blank name field!! Please add a name in the configuration file. Exiting.\n\n" "$((totalContainerCtr + 1))"
                 exit 1  # missing name found
             elif [ $arrayLineCtr -eq 2 ]
             then        # Run command is empty
                 printf "%i.\n" "$((totalContainerCtr + 1))"
                 runCmdArray+=("")
-                printf "${BRIGHT}INFO${NORMAL}, container will run with only set custom flags:\n'%s'\n" "$customFlags"
+                printf "${BRIGHT}INFO${NORMAL}, container will run with only set custom flags:\n'%s'\n\n" "$customFlags"
                 totalContainerCtr=$((totalContainerCtr + 1))
             fi
         else
@@ -123,8 +131,9 @@ do
     done
 done <"$file"
 
-printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
+sleep 1
 
+printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 tmpCtr=0
 for ((i = 1; i <= ${#imageArray[@]+1}; i++))
 do
@@ -139,14 +148,20 @@ do
         printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$tmpCtr]} "$customFlags"
     fi
     printf "\n----------------------------------------"
+    sleep .25
 done
+
 unset IFS
 
-printf "\n\n--------------------------------------------------------------------------------------------\n| Successfully built arrays with container information. Moving to deploy and update phase! |\n--------------------------------------------------------------------------------------------\n\n\n"
+sleep 0.5
+
+printf "\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
+
+sleep 0.5
 
 # Begin updating and deploying containers
-printf "${BRIGHT}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker stats${NORMAL}' command.\n\n"
-if ! [ $(docker stats | grep -cim1 -i 'Cannot connect') -eq 1 ]
+printf "${MAGENTA}TASK${NORMAL}, checking if docker daemon is running.\nRunning '${UNDERLINE}docker${NORMAL}' command.\n\n"
+if [ $(docker ps | grep -cim1 -i 'cannot connect') -eq 1 ]
 then
     printf "\n${RED}ERROR${NORMAL}, docker daemon not running. Please start it and then restart this script.\n\n"
     exit 1
@@ -193,8 +208,16 @@ do
         echo "${nameArray[i]} started with updated image. Moving to next container."
     fi
 done
+
+sleep 1
+
 echo "${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!"
 docker ps
 
-# Clean up and prune
-printf "Pruning all old unused images."
+sleep 2
+
+printf "${MAGENTA}TASK${NORMAL}, pruning all old unused images and old logs.\n\n"
+docker system prune -a --volumes -f
+find /var/lib/docker/containers/ -type f -name "*.log" -delete
+printf "${GREEN}SUCCESS${NORMAL}, clean up complete. Exiting runr.sh."
+exit 0

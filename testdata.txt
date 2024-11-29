@@ -1,0 +1,4 @@
+docker.io/hello-world|name1|-p 5959:5959
+docker.io/hello-world|name2
+docker.io/hello-world|name3
+docker.io/hello-world|name4

@@ -1,2 +1,2 @@
-dataFile|sampleContainerData.txt
+dataFile|testdata.txt
 customFlags|-e TZ=America/Chicago --restart=unless-stopped
