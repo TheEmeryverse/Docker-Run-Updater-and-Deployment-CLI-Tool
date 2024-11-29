@@ -27,12 +27,10 @@ imageArray=()                       # array to be generated of the container ima
 configCtr=1                         # track what line of the config file is currently being read
 
 clear
-
 printf "\n${BRIGHT}Welcome to Runr.sh, the complete bash-based 'docker run' container updater and deployment tool.\n\n${NORMAL}Easily keep your containers up to date and deployed.\n\nKeep downtime to a minimum with Runr's smart update service that only shuts\ncontainers down if they are out of date.\n\nAvoid lengthy and confusing documents with your run commands.\n\nRunr.sh keeps things simple and gives you peace of mind. Set, and forget.\n\n"
 printf "${GREEN}STARTING${NORMAL} Runr.sh${NORMAL}"
-
+printf "\n--------------------------------------------------\n\n"
 sleep 0.5
-
 # Begin reading from config and container data files
 while IFS='' read -r || [ -n "$REPLY" ]                 # read 'config.txt' file line by line
 do
@@ -75,6 +73,7 @@ fi
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
 sleep 1
+printf "\n--------------------------------------------------\n\n"
 printf "\n\n${MAGENTA}TASK${NORMAL}, generating arrays based on contents of: ${UNDERLINE}%s${NORMAL}\n\n" $file
 
 sleep 1
@@ -132,7 +131,7 @@ do
 done <"$file"
 
 sleep 1
-
+printf "\n--------------------------------------------------\n\n"
 tmpCtr=1
 printf "\n\n${UNDERLINE}Result of array generation:${NORMAL}"
 for ((i = 0; i < ${#imageArray[@]}; i++))
@@ -146,7 +145,7 @@ do
     else
         printf "${BRIGHT}Run parameters:${NORMAL}\n%s %s\n" ${runCmdArray[$i]} "$customFlags"
     fi
-    printf "\n----------------------------------------"
+    printf "\n--------------------------------------------------"
     sleep .25
     tmpCtr=$((tmpCtr + 1))
 done
@@ -156,7 +155,7 @@ unset IFS
 sleep 0.5
 
 printf "\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
-
+printf "\n--------------------------------------------------\n\n"
 sleep 0.5
 
 # Begin updating and deploying containers
@@ -168,7 +167,7 @@ then
 else
     printf "${GREEN}SUCCESS${NORMAL}, docker daemon is running.\n\n"
 fi
-
+printf "\n--------------------------------------------------\n\n"
 for ((i = 0; i < ${#nameArray[@]}; i++))
 do
     if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
