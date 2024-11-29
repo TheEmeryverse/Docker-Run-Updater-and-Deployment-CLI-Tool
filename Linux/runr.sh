@@ -73,7 +73,7 @@ fi
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
 sleep 1
-printf "\n\n\n--------------------------------------------------"
+printf "\n\n\n--------------------------------------------------\n"
 printf "\n\n${MAGENTA}TASK${NORMAL}, generating arrays based on contents of: ${UNDERLINE}%s${NORMAL}\n\n" $file
 
 sleep 1
@@ -154,7 +154,7 @@ unset IFS
 
 sleep 0.5
 
-printf "\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
+printf "\n\n\n${GREEN}SUCCESS${NORMAL}, built arrays from file: ${UNDERLINE}%s${NORMAL}\n\n" $file
 printf "\n--------------------------------------------------\n\n"
 sleep 0.5
 
