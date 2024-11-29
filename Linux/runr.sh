@@ -212,8 +212,8 @@ done
 sleep 1
 
 printf "\n\n${GREEN}SUCCESS${NORMAL}, all containers up to date and redeployed!\n\n"
-printf "\n\n"
-printf "--------------------------------------------------\n\n"
+printf "\n"
+printf "\n--------------------------------------------------\n\n"
 printf "\n\n"
 docker ps
 
