@@ -51,7 +51,7 @@ You may also want to set certain restart conditions, like 'restart=unless-stoppe
 When you open config.txt for the first time the second line will look like this:<br><br>
 Always-on container flags|-e TZ=America/Chicago --restart=unless-stopped<br><br>
 Just like the first line, the '|' separator is used, and the custom flags must come after it.<br>
-NOTE: Do not use quotes around the flags, or put a space after the '|' seperator.<br>
+NOTE: Do not use quotes around the flags, or put a space after the '|' separator.<br>
 <h3>The container data file:</h3>
 The is the file that contains all of the container data that runr.sh will use to build the containers.<br>
 While runr.sh does come with sampleContainerData.txt, you are free to create your own as long as you correctly format it and put the proper path in config.txt.<br><br>
