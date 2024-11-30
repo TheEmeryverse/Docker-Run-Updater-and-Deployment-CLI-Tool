@@ -15,7 +15,7 @@ MAGENTA=$(tput setaf 5)
 
 IFS=''                              # Ensure spaces don't break file parsing
 
-file="sampleContainerData.txt"      # file for the container database
+file=""
 configFile="config.txt"             # file for config.txt, MUST be in same directory as the .sh script
 
 totalContainerCtr=0                 # counter for the total number of containers present in the data file
