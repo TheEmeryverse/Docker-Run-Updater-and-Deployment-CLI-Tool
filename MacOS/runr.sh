@@ -187,7 +187,8 @@ do
                 printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is now running. Moving to next container.\n\n" ${nameArray[i]}
             fi
         fi
-    else            # Image is not up to date
+    elif [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 0 ]              # Image is not up to date
+    then
         printf "${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is not up to date.\n" ${nameArray[i]}
         printf "${MAGENTA}TASK${NORMAL}, pulling new image for ${GREEN}%s${NORMAL}.\n" ${nameArray[i]}                           # If not up to date, shut down and remove, then redeploy with updated container
         docker pull ${imageArray[i]}
