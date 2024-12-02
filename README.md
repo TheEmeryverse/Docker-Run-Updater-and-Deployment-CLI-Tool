@@ -15,7 +15,7 @@ Current release is fully compatible with Fedora 40 SE, MacOS Sequoia 15.2, Docke
 - Pass through arguments and file paths when the script is executed, such as 'bash runr.sh containerdata.txt' and bypass the specified data file in the config.txt.<br>
 - A summary at the end of script completion that includes what containers were updated.<br>
 - Possibly using 'screen', the ability to open containers with live logging in a separate shell that doesn't interrupt the script.<br>
-- Menu mode, maybe 'bah runr.sh -m' or 'bash runr.sh menu' that gives you options for viewing running containers, easily reading your data files, and manually updating containers specifically.<br>
+- Menu mode, maybe 'bash runr.sh -m' or 'bash runr.sh menu' that gives you options for viewing running containers, easily reading your data files, and manually updating containers specifically.<br>
 - Ignoring specified containers for updating. Still allowing you to run and even check if a container can be updated, but bypassing it unless specified.<br>
 
 <h2>Requirements:</h2>
