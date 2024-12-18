@@ -170,7 +170,7 @@ fi
 printf "\n--------------------------------------------------\n\n"
 for ((i = 0; i < ${#nameArray[@]}; i++))
 do
-    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -ge 1 ]
+    if [ $(docker pull ${imageArray[i]} | grep -cim1 -i 'Image is up to date') -eq 1 ]
     then            # Image is up to date
         printf "\n${BRIGHT}INFO${NORMAL}, ${GREEN}%s${NORMAL} is up to date.\n${MAGENTA}TASK${NORMAL}, checking if it is running.\n" ${nameArray[i]}      # Checking if it is running
         if [ $(docker ps | grep -cim1 "${nameArray[i]}$") -eq 1 ]
