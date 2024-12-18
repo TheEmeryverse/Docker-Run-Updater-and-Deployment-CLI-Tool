@@ -62,13 +62,13 @@ done <"$configFile"
 sleep 1
 
 lastChar=$(tail -c 1 $file)         # check if the file is properly formatted without an empty line at the bottom
-if [ -z $lastChar ]
-then
-    printf "\n${RED}ERROR${NORMAL}, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
-    exit 1                          # exit if blank line detected at end of file
-else
-    printf "\n${GREEN}SUCCESS${NORMAL}, file passed last line check.\n\n"
-fi
+# if [ -z $lastChar ]
+# then
+#     printf "\n${RED}ERROR${NORMAL}, file has a blank line as the last line. Please correct and refer to example configuration file on github for formatting.\n"
+#     exit 1                          # exit if blank line detected at end of file
+# else
+#     printf "\n${GREEN}SUCCESS${NORMAL}, file passed last line check.\n\n"
+# fi
 
 printf "${GREEN}SUCCESS${NORMAL}, file loaded is: %s\n\n" $file
 cat -n $file                        # display container data file
